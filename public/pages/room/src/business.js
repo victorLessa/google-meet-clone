@@ -24,9 +24,10 @@ class Business {
   async _init() {
     this.view.configureRecordButton(this.onRecordPressed.bind(this));
     this.view.configureLeaveButton(this.onLeavePressed.bind(this));
+    this.view.configureMuteButton(this.onMutePressed.bind(this));
     this.view.configureScreenShareButton(this.onScreenSharePressed.bind(this));
 
-    this.currentStream = await this.media.getCamera();
+    this.currentStream = await this.media.getCamera(true);
     this.socket = this.socketBuilder
       .setOnUserConnected(this.onUserConnected())
       .setOnUserDisconnected(this.onUserDisconnected())
@@ -174,6 +175,17 @@ class Business {
 
   onLeavePressed() {
     this.usersRecordings.forEach((value, key) => value.download());
+  }
+
+  onMutePressed() {
+    console.log("mute audio", this.currentStream);
+
+    this.currentStream.getAudioTracks().forEach((t) => {
+      if (t.kind == "audio") {
+        console.log(t);
+        t.enabled = !t.enabled;
+      }
+    });
   }
 
   async onScreenSharePressed() {

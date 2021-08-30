@@ -3,6 +3,7 @@ class View {
     this.recorderBtn = document.getElementById("record");
     this.leaveBtn = document.getElementById("leave");
     this.screenShareBtn = document.getElementById("screen_share");
+    this.muteBtn = document.getElementById("mute");
   }
   createVideoElement({ muted = true, src, srcObject }) {
     const video = document.createElement("video");
@@ -67,6 +68,10 @@ class View {
     this.recorderBtn.style.color = isActive ? "red" : "white";
   }
 
+  toogleMuteButtonColor(isActive) {
+    this.muteBtn.style.color = isActive ? "red" : "white";
+  }
+
   configureRecordButton(command) {
     this.recorderBtn.addEventListener("click", this.onRecordClick(command));
   }
@@ -81,6 +86,16 @@ class View {
     };
   }
 
+  onMuteClick(command) {
+    this.muteEnabled = false;
+    return () => {
+      const isActive = (this.muteEnabled = !this.muteEnabled);
+      command(this.muteEnabled);
+
+      this.toogleMuteButtonColor(isActive);
+    };
+  }
+
   onLeaveClick(command) {
     return async () => {
       command();
@@ -91,6 +106,10 @@ class View {
   }
   configureScreenShareButton(command) {
     this.screenShareBtn.addEventListener("click", command);
+  }
+
+  configureMuteButton(command) {
+    this.muteBtn.addEventListener("click", this.onMuteClick(command));
   }
 
   configureLeaveButton(command) {
