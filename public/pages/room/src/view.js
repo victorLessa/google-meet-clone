@@ -5,7 +5,7 @@ class View {
     this.screenShareBtn = document.getElementById("screen_share");
     this.muteBtn = document.getElementById("mute");
   }
-  createVideoElement({ muted = true, src, srcObject }) {
+  createVideoElement({ muted = false, src, srcObject }) {
     const video = document.createElement("video");
     video.muted = muted;
     video.src = src;
@@ -29,7 +29,7 @@ class View {
     stream = null,
     url = null,
     isCurrentId = false,
-    muted = true,
+    muted = false,
   }) {
     console.log("==render video");
     const video = this.createVideoElement({
