@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "SET PORT=9000 npm start",
+    "dev": "PORT=9000 npm start",
     "start": "npx peerjs --port $PORT --key peerjs --path /",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

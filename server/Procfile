@@ -1,0 +1,3 @@
+
+release: npm i nodemon 
+npx nodemon index.js
