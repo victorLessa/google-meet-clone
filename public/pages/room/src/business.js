@@ -8,7 +8,6 @@ class Business {
     this.peerBuilder = peerBuilder;
 
     this.socket = {};
-    this.screens = new Map();
     this.currentScreenShare = {};
     this.currentStream = {};
     this.currentPeer = {};
@@ -27,7 +26,7 @@ class Business {
     this.view.configureMuteButton(this.onMutePressed.bind(this));
     this.view.configureScreenShareButton(this.onScreenSharePressed.bind(this));
 
-    this.currentStream = await this.media.getCamera(true);
+    this.currentStream = await this.media.getCamera();
     this.socket = this.socketBuilder
       .setOnUserConnected(this.onUserConnected())
       .setOnUserDisconnected(this.onUserDisconnected())
@@ -44,7 +43,7 @@ class Business {
     this.addVideoStream(this.currentPeer.id);
   }
 
-  addVideoStream(userId, stream = this.currentStream) {
+  addVideoStream(userId, stream = this.currentStream, muted = true) {
     const recorderInstance = new Recorder(userId, stream);
 
     this.usersRecordings.set(recorderInstance.filename, recorderInstance);
@@ -54,12 +53,12 @@ class Business {
     }
 
     const isCurrentId = false;
-
-    this.screens.set(stream.id);
+    console.log(muted);
     this.view.renderVideo({
       userId,
       stream,
       isCurrentId,
+      muted,
     });
   }
 
@@ -112,7 +111,7 @@ class Business {
       const callerId = call.peer;
 
       if (!this.peers.has(stream.id)) {
-        this.addVideoStream(callerId, stream);
+        this.addVideoStream(callerId, stream, false);
         this.peers.set(callerId, { call });
         this.peers.set(stream.id, { call });
 

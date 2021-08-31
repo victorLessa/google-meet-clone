@@ -7,6 +7,7 @@ class View {
   }
   createVideoElement({ muted = false, src, srcObject }) {
     const video = document.createElement("video");
+    video.autoplay = true;
     video.muted = muted;
     video.src = src;
     video.srcObject = srcObject;
@@ -29,9 +30,9 @@ class View {
     stream = null,
     url = null,
     isCurrentId = false,
-    muted = false,
+    muted = true,
   }) {
-    console.log("==render video");
+    console.log("==render video", muted);
     const video = this.createVideoElement({
       muted,
       src: url,
