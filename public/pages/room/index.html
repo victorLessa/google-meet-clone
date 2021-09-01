@@ -22,58 +22,64 @@
     <script src="src/app.js" defer></script>
   </head>
   <body>
-    <div class="main">
-      <div class="main__left">
-        <div class="main__videos">
-          <div id="video-grid"></div>
-        </div>
-        <div class="main__controls">
-          <div class="main__controls__block disabled">
-            <div id="mute" class="main__controls__button main__mute_button">
+    <div
+      class="
+        container-fluid
+        d-flex
+        main__videos
+        align-items-center
+        justify-content-center
+      "
+      style="height: 100vh"
+    >
+      <!-- <div class="main__left"> -->
+      <div class="row p-3">
+        <div id="video-grid"></div>
+      </div>
+      <div class="row p-2 fixed-bottom justify-content-center">
+        <div class="row">
+          <div class="main__controls__block">
+            <div
+              id="mute"
+              class="text-white main__controls__button main__mute_button"
+            >
               <i class="fas fa-microphone"></i>
               <span>Mute</span>
             </div>
-            <div class="main__controls__button main__video_button">
+            <!-- <div class="text-white main__controls__button main__video_button">
               <i class="fas fa-video"></i>
               <span>Stop Video</span>
-            </div>
+            </div> -->
           </div>
-          <div class="main__controls__block">
+          <div class="text-white main__controls__block">
             <div class="main__controls__button">
-              <i class="fas fa-user-friends badge-wrapper" title="Participants">
+              <i
+                class="text-white fas fa-user-friends badge-wrapper"
+                title="Participants"
+              >
                 <span class="badge badge-secondary" id="participants">1</span>
               </i>
             </div>
-            <div class="main__controls__button disabled">
-              <i class="fas fa-comment-alt" title="Chat"></i>
-              <span>Chat</span>
-            </div>
-            <!-- <div
-              id="shareScreen"
-              class="main__controls__button btn btn-success disabled"
-            >
-              <i class="fas fa-arrow-up" title="Share Screen"></i>
-              <span>Share Screen</span>
-            </div> -->
-            <div id="record" class="main__controls__button">
-              <i class="fa fa-circle-o" title="Record"></i>
+            <div id="record" class="text-white main__controls__button">
+              <i class="text-white fa fa-circle-o" title="Record"></i>
               <span>Record</span>
             </div>
-            <div id="screen_share" class="main__controls__button disabled">
-              <i class="fas fa fa-desktop" title="Transmitir"></i>
+            <div id="screen_share" class="main__controls__button">
+              <i class="text-white fas fa fa-desktop" title="Transmitir"></i>
               <span>Transmitir</span>
             </div>
           </div>
           <div class="main__controls__block">
             <div class="main__controls__button">
               <button id="leave" type="button" class="btn btn-danger">
-                End
+                Sair
               </button>
             </div>
           </div>
         </div>
       </div>
-      <div class="main__right">
+      <!-- </div> -->
+      <!-- <div class="main__right">
         <div class="main__header">
           <h6>Chat</h6>
         </div>
@@ -87,7 +93,7 @@
             placeholder="Type message here..."
           />
         </div>
-      </div>
+      </div> -->
     </div>
   </body>
 </html>

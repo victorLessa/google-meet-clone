@@ -32,7 +32,6 @@ class View {
     isCurrentId = false,
     muted = true,
   }) {
-    console.log("==render video", muted);
     const video = this.createVideoElement({
       muted,
       src: url,
