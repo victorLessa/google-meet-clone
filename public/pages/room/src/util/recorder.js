@@ -81,7 +81,7 @@ class Recorder {
       const a = document.createElement("a");
       a.style.display = "none";
       a.href = url;
-      a.download = `${this.filename}.webm`;
+      a.download = `${this.filename}.mp4`;
       document.body.appendChild(a);
       a.click();
     }

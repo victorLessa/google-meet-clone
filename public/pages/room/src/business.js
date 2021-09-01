@@ -67,7 +67,7 @@ class Business {
     return (userId) => {
       console.log("user connected!", userId, this.currentStream);
       this.currentPeer.call(userId, this.currentStream);
-      if (Object.keys(this.currentScreenShare).length) {
+      if (this.currentScreenShare.id) {
         this.currentPeer.call(userId, this.currentScreenShare);
       }
     };
@@ -123,12 +123,12 @@ class Business {
 
       if (!this.peers.has(callerId)) {
         this.peers.set(callerId, { call });
-        this.screen.set(stream.id, { call });
+        this.screen.set(stream.id, { call, streamId: stream.id });
         this.addVideoStream(callerId, stream, false);
         this.view.setParticipants(this.peers.size);
       }
       if (!this.screen.has(stream.id)) {
-        this.screen.set(stream.id, { call });
+        this.screen.set(stream.id, { call, streamId: stream.id });
         this.addVideoStream(stream.id, stream, false);
       }
     };
@@ -150,6 +150,7 @@ class Business {
 
   onRecordPressed(recordingEnabled) {
     this.recordingEnabled = recordingEnabled;
+    console.log("pressed", recordingEnabled);
     for (const [key, value] of this.usersRecordings) {
       if (this.recordingEnabled) {
         value.startRecording();
@@ -201,10 +202,7 @@ class Business {
   }
 
   async onScreenSharePressed() {
-    if (
-      this.currentScreenShare &&
-      !Object.keys(this.currentScreenShare).length
-    ) {
+    if (!this.currentScreenShare.id) {
       this.currentScreenShare = await this.media.getScreen();
       const isCurrentId = false;
       this.view.renderVideo({
@@ -218,8 +216,10 @@ class Business {
       }
       return;
     }
-    this.socket.emit("close-screen", this.room, this.currentScreenShare.id);
-    this.view.removeVideoElement(this.currentScreenShare.id);
-    this.currentScreenShare = {};
+    if (this.currentScreenShare.id) {
+      this.socket.emit("close-screen", this.room, this.currentScreenShare.id);
+      this.view.removeVideoElement(this.currentScreenShare.id);
+      this.currentScreenShare = {};
+    }
   }
 }
