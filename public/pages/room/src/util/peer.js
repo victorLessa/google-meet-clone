@@ -40,12 +40,12 @@ class PeerBuilder {
     return this;
   }
 
-  _prepareCallEvent(call, returnAnswer) {
+  _prepareCallEvent(call) {
     call.on("stream", (stream) => this.onPeerStreamReceived(call, stream));
     call.on("error", (error) => this.onCallError(call, error));
     call.on("close", (_) => this.onCallClose(call));
 
-    this.onCallReceived(call, returnAnswer);
+    this.onCallReceived(call);
   }
 
   _preparePeerCallInstanceFunction(peerModule) {
@@ -54,15 +54,10 @@ class PeerBuilder {
     const peerCall = PeerCustomModule.prototype.call;
     const context = this;
 
-    PeerCustomModule.prototype.call = function (
-      id,
-      stream,
-      returnAnswer = true
-    ) {
+    PeerCustomModule.prototype.call = function (id, stream) {
       const call = peerCall.apply(this, [id, stream]);
 
-      console.log("calll", returnAnswer);
-      context._prepareCallEvent(call, returnAnswer);
+      context._prepareCallEvent(call);
 
       return call;
     };

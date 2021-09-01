@@ -23,6 +23,11 @@ io.on("connection", (socket) => {
       socket.to(roomId).broadcast.emit("user-disconnected", userId);
     });
   });
+
+  socket.on("close-screen", (roomId, screenId) => {
+    console.log("room: ", roomId, "screenId: ", screenId);
+    socket.to(roomId).broadcast.emit("disconnected-screen", screenId);
+  });
 });
 
 const startServer = () => {

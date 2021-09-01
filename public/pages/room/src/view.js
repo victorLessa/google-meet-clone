@@ -8,7 +8,7 @@ class View {
   createVideoElement({ muted = false, src, srcObject }) {
     const video = document.createElement("video");
     video.autoplay = true;
-    video.muted = muted;
+    video.muted = true;
     video.src = src;
     video.srcObject = srcObject;
 
@@ -62,7 +62,7 @@ class View {
 
   removeVideoElement(id) {
     const element = document.getElementById(id);
-    element.remove();
+    if (element) element.remove();
   }
 
   toogleRecordButtonColor(isActive) {

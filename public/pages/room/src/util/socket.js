@@ -4,6 +4,7 @@ class SocketBuilder {
     this.onUserConnected = () => {};
     this.onScreenShareConnected = () => {};
     this.onUserDisconnected = () => {};
+    this.onScreenDisconnected = () => {};
   }
   setOnUserConnected(fn) {
     this.onUserConnected = fn;
@@ -20,6 +21,11 @@ class SocketBuilder {
     return this;
   }
 
+  setScreenDisconnected(fn) {
+    this.onScreenDisconnected = fn;
+    return this;
+  }
+
   build() {
     const socket = io.connect(this.socketUrl, {
       withCredentials: false,
@@ -28,6 +34,7 @@ class SocketBuilder {
     socket.on("user-connected", this.onUserConnected);
     socket.on("screen-connected", this.onScreenShareConnected);
     socket.on("user-disconnected", this.onUserDisconnected);
+    socket.on("disconnected-screen", this.onScreenDisconnected);
 
     return socket;
   }

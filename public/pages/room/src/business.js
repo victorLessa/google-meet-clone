@@ -13,6 +13,7 @@ class Business {
     this.currentPeer = {};
 
     this.peers = new Map();
+    this.screen = new Map();
     this.usersRecordings = new Map();
   }
   static initialize(deps) {
@@ -30,6 +31,7 @@ class Business {
     this.socket = this.socketBuilder
       .setOnUserConnected(this.onUserConnected())
       .setOnUserDisconnected(this.onUserDisconnected())
+      .setScreenDisconnected(this.onScreenDisconnected())
       .build();
 
     this.currentPeer = await this.peerBuilder
@@ -53,7 +55,6 @@ class Business {
     }
 
     const isCurrentId = false;
-    console.log(muted);
     this.view.renderVideo({
       userId,
       stream,
@@ -66,7 +67,9 @@ class Business {
     return (userId) => {
       console.log("user connected!", userId, this.currentStream);
       this.currentPeer.call(userId, this.currentStream);
-      this.currentPeer.call(userId, this.currentScreenShare);
+      if (Object.keys(this.currentScreenShare).length) {
+        this.currentPeer.call(userId, this.currentScreenShare);
+      }
     };
   }
 
@@ -81,6 +84,15 @@ class Business {
       this.stopRecording(userId);
       this.view.removeVideoElement(userId);
       console.log("user disconnected!", userId);
+    };
+  }
+
+  onScreenDisconnected() {
+    return (screenId) => {
+      if (this.screen.has(screenId)) {
+        this.screen.delete(screenId);
+        this.view.removeVideoElement(screenId);
+      }
     };
   }
 
@@ -105,17 +117,19 @@ class Business {
       call.answer(this.currentStream);
     };
   }
-
   onPeerStreamReceived() {
     return (call, stream) => {
       const callerId = call.peer;
 
-      if (!this.peers.has(stream.id)) {
-        this.addVideoStream(callerId, stream, false);
+      if (!this.peers.has(callerId)) {
         this.peers.set(callerId, { call });
-        this.peers.set(stream.id, { call });
-
+        this.screen.set(stream.id, { call });
+        this.addVideoStream(callerId, stream, false);
         this.view.setParticipants(this.peers.size);
+      }
+      if (!this.screen.has(stream.id)) {
+        this.screen.set(stream.id, { call });
+        this.addVideoStream(stream.id, stream, false);
       }
     };
   }
@@ -136,7 +150,6 @@ class Business {
 
   onRecordPressed(recordingEnabled) {
     this.recordingEnabled = recordingEnabled;
-    console.log("pressed", recordingEnabled);
     for (const [key, value] of this.usersRecordings) {
       if (this.recordingEnabled) {
         value.startRecording();
@@ -158,7 +171,7 @@ class Business {
       console.log("stoppp");
       await rec.stopRecording();
 
-      this.playRecordings(key);
+      this.onLeavePressed(key);
     }
   }
 
@@ -188,19 +201,22 @@ class Business {
   }
 
   async onScreenSharePressed() {
-    this.currentScreenShare = await this.media.getScreen();
+    if (!Object.keys(this.currentScreenShare).length) {
+      this.currentScreenShare = await this.media.getScreen();
+      const isCurrentId = false;
+      this.view.renderVideo({
+        userId: this.currentScreenShare.id,
+        stream: this.currentScreenShare,
+        isCurrentId,
+      });
 
-    const isCurrentId = false;
-    this.view.renderVideo({
-      userId: this.currentPeer.id,
-      stream: this.currentScreenShare,
-      isCurrentId,
-    });
-
-    for (const [key, _] of this.peers) {
-      console.log(key);
-
-      this.currentPeer.call(key, this.currentScreenShare);
+      for (const [key, _] of this.peers) {
+        this.currentPeer.call(key, this.currentScreenShare);
+      }
+      return;
     }
+    this.socket.emit("close-screen", this.room, this.currentScreenShare.id);
+    this.view.removeVideoElement(this.currentScreenShare.id);
+    this.currentScreenShare = {};
   }
 }
