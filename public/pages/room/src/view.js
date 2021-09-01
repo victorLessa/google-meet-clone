@@ -69,6 +69,7 @@ class View {
   }
 
   toogleMuteButtonColor(isActive) {
+    console.log(isActive, "muted");
     this.muteBtn.style.color = isActive ? "red" : "white";
   }
 
@@ -104,8 +105,26 @@ class View {
       window.location = "/pages/home";
     };
   }
+
+  onScreenShareClick(command) {
+    this.screenShareEnable = false;
+    return () => {
+      const isActive = (this.screenShareEnable = !this.screenShareEnable);
+      command(isActive);
+    };
+  }
+
+  toogleButtonShareScreen(isActive) {
+    const elem = document.querySelector("#text-share-screen");
+    this.screenShareBtn.style.color = isActive ? "red" : "white";
+    elem.innerText = isActive ? "Parar Transmisão" : "Transmitir";
+  }
+
   configureScreenShareButton(command) {
-    this.screenShareBtn.addEventListener("click", command);
+    this.screenShareBtn.addEventListener(
+      "click",
+      this.onScreenShareClick(command)
+    );
   }
 
   configureMuteButton(command) {

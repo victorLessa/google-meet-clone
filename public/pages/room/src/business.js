@@ -80,6 +80,14 @@ class Business {
         this.peers.delete(userId);
       }
 
+      for (let [key, value] of this.screen) {
+        if (value.userId == userId) {
+          this.view.removeVideoElement(key);
+          this.screen.delete(key);
+          break;
+        }
+      }
+
       this.view.setParticipants(this.peers.size);
       this.stopRecording(userId);
       this.view.removeVideoElement(userId);
@@ -128,7 +136,7 @@ class Business {
         this.view.setParticipants(this.peers.size);
       }
       if (!this.screen.has(stream.id)) {
-        this.screen.set(stream.id, { call, streamId: stream.id });
+        this.screen.set(stream.id, { call, userId: callerId });
         this.addVideoStream(stream.id, stream, false);
       }
     };
@@ -201,7 +209,7 @@ class Business {
     });
   }
 
-  async onScreenSharePressed() {
+  async onScreenSharePressed(isActive) {
     if (!this.currentScreenShare.id) {
       this.currentScreenShare = await this.media.getScreen();
       const isCurrentId = false;
@@ -214,11 +222,14 @@ class Business {
       for (const [key, _] of this.peers) {
         this.currentPeer.call(key, this.currentScreenShare);
       }
+
+      this.view.toogleButtonShareScreen(isActive);
       return;
     }
     if (this.currentScreenShare.id) {
       this.socket.emit("close-screen", this.room, this.currentScreenShare.id);
       this.view.removeVideoElement(this.currentScreenShare.id);
+      this.view.toogleButtonShareScreen(isActive);
       this.currentScreenShare = {};
     }
   }
