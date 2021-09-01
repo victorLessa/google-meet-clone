@@ -201,7 +201,10 @@ class Business {
   }
 
   async onScreenSharePressed() {
-    if (!Object.keys(this.currentScreenShare).length) {
+    if (
+      this.currentScreenShare &&
+      !Object.keys(this.currentScreenShare).length
+    ) {
       this.currentScreenShare = await this.media.getScreen();
       const isCurrentId = false;
       this.view.renderVideo({
