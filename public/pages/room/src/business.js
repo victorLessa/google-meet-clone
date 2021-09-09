@@ -22,7 +22,7 @@ class Business {
   }
 
   async _init() {
-    this.view.configureRecordButton(this.onRecordPressed.bind(this));
+    this.view.configureVideoButton(this.onVideoPressed.bind(this));
     this.view.configureLeaveButton(this.onLeavePressed.bind(this));
     this.view.configureMuteButton(this.onMutePressed.bind(this));
     this.view.configureScreenShareButton(this.onScreenSharePressed.bind(this));
@@ -206,18 +206,19 @@ class Business {
     this.usersRecordings.forEach((value, key) => value.download());
   }
 
-  onMutePressed() {
-    console.log("mute audio", this.currentStream);
-
-    this.currentStream.getAudioTracks().forEach((t) => {
-      if (t.kind == "audio") {
-        console.log(t);
-        t.enabled = !t.enabled;
-      }
-    });
+  onVideoPressed() {
+    this.currentStream
+      .getVideoTracks()
+      .forEach((track) => (track.enabled = !track.enabled));
   }
 
-  async onScreenSharePressed(isActive) {
+  onMutePressed() {
+    this.currentStream
+      .getAudioTracks()
+      .forEach((t) => (t.enabled = !t.enabled));
+  }
+
+  async onScreenSharePressed() {
     if (!this.currentScreenShare.id) {
       this.currentScreenShare = await this.media.getScreen();
       const isCurrentId = false;
@@ -231,13 +232,12 @@ class Business {
         this.currentPeer.call(key, this.currentScreenShare);
       }
 
-      this.view.toogleButtonShareScreen(isActive);
       return;
     }
     if (this.currentScreenShare.id) {
       this.socket.emit("close-screen", this.room, this.currentScreenShare.id);
       this.view.removeVideoElement(this.currentScreenShare.id);
-      this.view.toogleButtonShareScreen(isActive);
+
       this.currentScreenShare = {};
     }
   }

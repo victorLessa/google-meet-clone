@@ -1,9 +1,10 @@
 class View {
   constructor() {
-    this.recorderBtn = document.getElementById("record");
+    // this.recorderBtn = document.getElementById("record");
     this.leaveBtn = document.getElementById("leave");
     this.screenShareBtn = document.getElementById("screen_share");
     this.muteBtn = document.getElementById("mute");
+    this.videoBtn = document.getElementById("video");
   }
   createVideoElement({ muted = false, src, srcObject }) {
     const video = document.createElement("video");
@@ -63,18 +64,18 @@ class View {
     if (element) element.remove();
   }
 
-  toogleRecordButtonColor(isActive) {
-    this.recorderBtn.style.color = isActive ? "red" : "white";
-  }
+  // toogleRecordButtonColor(isActive) {
+  //   this.recorderBtn.style.color = isActive ? "red" : "white";
+  // }
 
   toogleMuteButtonColor(isActive) {
     console.log(isActive, "muted");
     this.muteBtn.style.color = isActive ? "red" : "white";
   }
 
-  configureRecordButton(command) {
-    this.recorderBtn.addEventListener("click", this.onRecordClick(command));
-  }
+  // configureRecordButton(command) {
+  //   this.recorderBtn.addEventListener("click", this.onRecordClick(command));
+  // }
 
   onRecordClick(command) {
     this.recordingEnabled = false;
@@ -110,13 +111,16 @@ class View {
     return () => {
       const isActive = (this.screenShareEnable = !this.screenShareEnable);
       command(isActive);
+      this.view.toogleButtonShareScreen(isActive);
     };
   }
 
   toogleButtonShareScreen(isActive) {
-    const elem = document.querySelector("#text-share-screen");
     this.screenShareBtn.style.color = isActive ? "red" : "white";
-    elem.innerText = isActive ? "Parar Transmisão" : "Transmitir";
+  }
+
+  toogleButtonVideo(isActive) {
+    this.videoBtn.style.color = isActive ? "red" : "white";
   }
 
   configureScreenShareButton(command) {
@@ -132,5 +136,18 @@ class View {
 
   configureLeaveButton(command) {
     this.leaveBtn.addEventListener("click", this.onLeaveClick(command));
+  }
+
+  onVideoClick(command) {
+    this.videoEnabled = false;
+    return () => {
+      const isActive = (this.videoEnabled = !this.videoEnabled);
+      command(isActive);
+      this.toogleButtonVideo(isActive);
+    };
+  }
+
+  configureVideoButton(command) {
+    this.videoBtn.addEventListener("click", this.onVideoClick(command));
   }
 }
