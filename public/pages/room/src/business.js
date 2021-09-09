@@ -27,22 +27,27 @@ class Business {
     this.view.configureMuteButton(this.onMutePressed.bind(this));
     this.view.configureScreenShareButton(this.onScreenSharePressed.bind(this));
 
-    this.currentStream = await this.media.getCamera();
-    this.socket = this.socketBuilder
-      .setOnUserConnected(this.onUserConnected())
-      .setOnUserDisconnected(this.onUserDisconnected())
-      .setScreenDisconnected(this.onScreenDisconnected())
-      .build();
+    try {
+      this.currentStream = await this.media.getCamera();
 
-    this.currentPeer = await this.peerBuilder
-      .setOnError(this.onPeerError())
-      .setOnConnectionOpened(this.onPeerConnectionOpened())
-      .setOnCallReceived(this.onPeerCallReceived())
-      .setOnPeerStreamReceived(this.onPeerStreamReceived())
-      .setOnCallError(this.onPeerCallError())
-      .setOnCallClose(this.onPeerCallClose())
-      .build();
-    this.addVideoStream(this.currentPeer.id);
+      this.socket = this.socketBuilder
+        .setOnUserConnected(this.onUserConnected())
+        .setOnUserDisconnected(this.onUserDisconnected())
+        .setScreenDisconnected(this.onScreenDisconnected())
+        .build();
+
+      this.currentPeer = await this.peerBuilder
+        .setOnError(this.onPeerError())
+        .setOnConnectionOpened(this.onPeerConnectionOpened())
+        .setOnCallReceived(this.onPeerCallReceived())
+        .setOnPeerStreamReceived(this.onPeerStreamReceived())
+        .setOnCallError(this.onPeerCallError())
+        .setOnCallClose(this.onPeerCallClose())
+        .build();
+      this.addVideoStream(this.currentPeer.id);
+    } catch (err) {
+      alert("É necessario possuir webcan para utilizar a aplicação!");
+    }
   }
 
   addVideoStream(userId, stream = this.currentStream, muted = true) {
@@ -55,18 +60,21 @@ class Business {
     }
 
     const isCurrentId = false;
-    this.view.renderVideo({
+    const paylod = {
       userId,
       stream,
       isCurrentId,
       muted,
-    });
+    };
+    this.view.renderVideo(paylod);
   }
 
   onUserConnected() {
     return (userId) => {
       console.log("user connected!", userId, this.currentStream);
-      this.currentPeer.call(userId, this.currentStream);
+      if (this.currentStream.id)
+        this.currentPeer.call(userId, this.currentStream);
+      else this.socket.emit("send-thumbnail", this.room, this.currentPeer.id);
       if (this.currentScreenShare.id) {
         this.currentPeer.call(userId, this.currentScreenShare);
       }

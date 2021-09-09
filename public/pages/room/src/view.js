@@ -8,7 +8,7 @@ class View {
   createVideoElement({ muted = false, src, srcObject }) {
     const video = document.createElement("video");
     video.autoplay = true;
-    video.muted = true;
+    video.muted = muted;
     video.src = src;
     video.srcObject = srcObject;
 
@@ -19,7 +19,7 @@ class View {
     }
 
     if (srcObject) {
-      video.addEventListener("loadedmetadata", (_) => video.play());
+      video.addEventListener("loadedmetadata", (_) => video?.play());
     }
 
     return video;
@@ -45,10 +45,9 @@ class View {
     div.id = userId;
     div.classList.add("wrapper");
     div.append(video);
-    const div2 = document.createElement("div");
+    const div2 = document.createElement("span");
     div2.innerText = isCurrentId ? "" : userId;
     div.append(div2);
-
     const videoGrid = document.getElementById("video-grid");
     videoGrid.append(div);
   }

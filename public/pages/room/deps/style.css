@@ -70,7 +70,12 @@ video {
   position: relative;
   z-index: 100;
 }
-.wrapper div {
+
+.wrapper .thumbnail {
+  position: relative;
+  z-index: 100;
+}
+.wrapper span {
   position: absolute;
   display: block;
   z-index: 150;
@@ -86,6 +91,16 @@ video {
 
 .disabled {
   opacity: 0.5;
+}
+
+.thumbnail {
+  height: 200px;
+  width: 300px;
+  margin: 5px;
+  border: 2px gray solid;
+  object-fit: cover;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 @media (max-width: 575.98px) {
