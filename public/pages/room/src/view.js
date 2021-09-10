@@ -45,7 +45,15 @@ class View {
     const div = document.createElement("div");
     div.id = userId;
     div.classList.add("wrapper");
+    const divOverlay = document.createElement("div");
+    divOverlay.classList.add("div-overlay");
+    divOverlay.onclick = this.fullScreenBtn(userId);
+    const iconOverlay = document.createElement("i");
     div.append(video);
+    iconOverlay.classList.add("fas");
+    iconOverlay.classList.add("fa-expand");
+    divOverlay.append(iconOverlay);
+    div.append(divOverlay);
     const div2 = document.createElement("span");
     div2.innerText = isCurrentId ? "" : userId;
     div.append(div2);
@@ -144,6 +152,19 @@ class View {
       const isActive = (this.videoEnabled = !this.videoEnabled);
       command(isActive);
       this.toogleButtonVideo(isActive);
+    };
+  }
+
+  fullScreenBtn(userId) {
+    this.enableFullScreen = false;
+    return () => {
+      const video = document.getElementById(userId);
+      if (this.enableFullScreen) {
+        video.classList.remove("video-full-screen");
+      } else {
+        video.classList.add("video-full-screen");
+      }
+      this.enableFullScreen = !this.enableFullScreen;
     };
   }
 

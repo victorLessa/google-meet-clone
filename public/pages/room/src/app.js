@@ -3,6 +3,7 @@ const onload = () => {
   const room = urlParams.get("room");
 
   const socketUrl = "https://google-meet-clone-app.herokuapp.com/";
+  // const socketUrl = "http://localhost:3000/";
   const socketBuilder = new SocketBuilder({ socketUrl });
 
   const peerConfig = Object.values({

@@ -44,13 +44,14 @@ class Business {
         .setOnCallError(this.onPeerCallError())
         .setOnCallClose(this.onPeerCallClose())
         .build();
-      this.addVideoStream(this.currentPeer.id);
+      await this.addVideoStream(this.currentPeer.id);
     } catch (err) {
+      console.log(err);
       alert("É necessario possuir webcan para utilizar a aplicação!");
     }
   }
 
-  addVideoStream(userId, stream = this.currentStream, muted = true) {
+  async addVideoStream(userId, stream = this.currentStream, muted = true) {
     const recorderInstance = new Recorder(userId, stream);
 
     this.usersRecordings.set(recorderInstance.filename, recorderInstance);
@@ -66,7 +67,7 @@ class Business {
       isCurrentId,
       muted,
     };
-    this.view.renderVideo(paylod);
+    await this.view.renderVideo(paylod);
   }
 
   onUserConnected() {

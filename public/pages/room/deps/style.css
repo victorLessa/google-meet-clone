@@ -68,17 +68,13 @@ video {
 }
 .wrapper video {
   position: relative;
-  z-index: 100;
+  z-index: 0;
 }
 
-.wrapper .thumbnail {
-  position: relative;
-  z-index: 100;
-}
 .wrapper span {
   position: absolute;
   display: block;
-  z-index: 150;
+  z-index: 1;
   left: 5px;
   bottom: 20px;
   color: white;
@@ -91,16 +87,6 @@ video {
 
 .disabled {
   opacity: 0.5;
-}
-
-.thumbnail {
-  height: 200px;
-  width: 300px;
-  margin: 5px;
-  border: 2px gray solid;
-  object-fit: cover;
-  border-radius: 5px;
-  overflow: hidden;
 }
 
 @media (max-width: 575.98px) {
@@ -118,5 +104,43 @@ video {
 @media (max-width: 991.98px) {
 }
 
-@media (max-width: 1199.98px) {
+@media (min-width: 992px) {
+  .div-overlay {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    color: white;
+    background: #52525294;
+    justify-content: center;
+    align-items: center;
+    font-size: 50px;
+    z-index: 2;
+    opacity: 0;
+    top: 0;
+    position: absolute;
+    transition: 0.3s;
+  }
+
+  .div-overlay:hover {
+    opacity: 1;
+    transition: 0.3s;
+  }
+
+  .video-full-screen {
+    position: fixed;
+    display: flex;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 3;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .video-full-screen video {
+    width: 60vw;
+    height: 70vh;
+  }
 }
